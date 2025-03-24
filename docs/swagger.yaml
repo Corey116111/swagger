@@ -1,0 +1,39 @@
+openapi: 3.0.0
+info:
+  title: Эклерная кондитерская
+  version: 1.0.0
+  description: Управления эклерами, начинками и заказами
+paths:
+  /eclairs:
+    get:
+      tags:
+        - Эклеры
+      summary: Получить эклер дня
+      responses:
+        '200':
+          description: Описание эклера дня
+          content:
+            text/plain:
+              example: 'Сегодняшний эклер: Карамельно-ванильный с ореховой крошкой'
+  /fillings:
+    get:
+      tags:
+        - Начинки
+      summary: Получить фирменную начинку
+      responses:
+        '200':
+          description: Описание фирменной начинки
+          content:
+            text/plain:
+              example: 'Фирменная начинка: Заварной крем с тайским базиликом'
+  /orders:
+    post:
+      tags:
+        - Заказы
+      summary: Сделать стандартный заказ
+      responses:
+        '200':
+          description: Подтверждение заказа
+          content:
+            text/plain:
+              example: Ваш заказ на 1 коробку эклеров принят!
