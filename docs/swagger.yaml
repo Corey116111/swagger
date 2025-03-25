@@ -15,6 +15,26 @@ paths:
           content:
             text/plain:
               example: 'Сегодняшний эклер: Карамельно-ванильный с ореховой крошкой'
+    post:
+      tags:
+        - Эклеры
+      summary: Создать новый вид эклера
+      responses:
+        '201':
+          description: Подтверждение создания нового эклера
+          content:
+            text/plain:
+              example: Новый эклер "Мятно-шоколадный" успешно создан
+    delete:
+      tags:
+        - Эклеры
+      summary: Удалить эклер из меню
+      responses:
+        '200':
+          description: Подтверждение удаления эклера
+          content:
+            text/plain:
+              example: Эклер "Кофейный" удален из меню
   /fillings:
     get:
       tags:
@@ -26,6 +46,26 @@ paths:
           content:
             text/plain:
               example: 'Фирменная начинка: Заварной крем с тайским базиликом'
+    patch:
+      tags:
+        - Начинки
+      summary: Обновить состав начинки
+      responses:
+        '200':
+          description: Подтверждение обновления начинки
+          content:
+            text/plain:
+              example: Состав начинки "Ванильная" успешно обновлен
+    put:
+      tags:
+        - Начинки
+      summary: Добавить новую начинку
+      responses:
+        '200':
+          description: Подтверждение добавления начинки
+          content:
+            text/plain:
+              example: Начинка "Клубнично-базиликовая" успешно добавлена
   /orders:
     post:
       tags:
@@ -37,3 +77,23 @@ paths:
           content:
             text/plain:
               example: Ваш заказ на 1 коробку эклеров принят!
+    get:
+      tags:
+        - Заказы
+      summary: Получить статус заказа
+      responses:
+        '200':
+          description: Текущий статус заказа
+          content:
+            text/plain:
+              example: 'Ваш заказ #123 готовится'
+    delete:
+      tags:
+        - Заказы
+      summary: Отменить заказ
+      responses:
+        '200':
+          description: Подтверждение отмены заказа
+          content:
+            text/plain:
+              example: 'Ваш заказ #123 успешно отменен'
