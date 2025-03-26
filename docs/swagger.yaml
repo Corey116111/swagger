@@ -9,91 +9,350 @@ paths:
       tags:
         - Эклеры
       summary: Получить эклер дня
+      description: Специальное предложение дня - уникальный эклер, доступный только сегодня
       responses:
         '200':
           description: Описание эклера дня
           content:
-            text/plain:
-              example: 'Сегодняшний эклер: Карамельно-ванильный с ореховой крошкой'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Eclair'
     post:
       tags:
         - Эклеры
       summary: Создать новый вид эклера
+      description: Добавляет новый вид эклера в меню кондитерской
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EclairInput'
       responses:
         '201':
           description: Подтверждение создания нового эклера
           content:
-            text/plain:
-              example: Новый эклер "Мятно-шоколадный" успешно создан
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Eclair'
     delete:
       tags:
         - Эклеры
       summary: Удалить эклер из меню
+      description: Удаление существующего вида эклера из меню по его идентификатору
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Идентификатор эклера для удаления
       responses:
         '200':
           description: Подтверждение удаления эклера
           content:
-            text/plain:
-              example: Эклер "Кофейный" удален из меню
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Эклер 'Кофейный' удален из меню
   /fillings:
     get:
       tags:
         - Начинки
       summary: Получить фирменную начинку
+      description: Информация о специальной фирменной начинке недели
       responses:
         '200':
           description: Описание фирменной начинки
           content:
-            text/plain:
-              example: 'Фирменная начинка: Заварной крем с тайским базиликом'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Filling'
     patch:
       tags:
         - Начинки
       summary: Обновить состав начинки
+      description: Обновляет состав существующей начинки
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FillingUpdate'
       responses:
         '200':
           description: Подтверждение обновления начинки
           content:
-            text/plain:
-              example: Состав начинки "Ванильная" успешно обновлен
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Filling'
     put:
       tags:
         - Начинки
       summary: Добавить новую начинку
+      description: Создает новый вид начинки для эклеров
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FillingInput'
       responses:
         '200':
           description: Подтверждение добавления начинки
           content:
-            text/plain:
-              example: Начинка "Клубнично-базиликовая" успешно добавлена
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Filling'
   /orders:
     post:
       tags:
         - Заказы
       summary: Сделать стандартный заказ
+      description: Создает новый заказ на стандартную коробку эклеров (12 шт)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderInput'
       responses:
         '200':
           description: Подтверждение заказа
           content:
-            text/plain:
-              example: Ваш заказ на 1 коробку эклеров принят!
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
     get:
       tags:
         - Заказы
       summary: Получить статус заказа
+      description: Возвращает текущий статус указанного заказа
+      parameters:
+        - in: query
+          name: orderId
+          required: true
+          schema:
+            type: string
+          description: Идентификатор заказа
       responses:
         '200':
           description: Текущий статус заказа
           content:
-            text/plain:
-              example: 'Ваш заказ #123 готовится'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderStatus'
     delete:
       tags:
         - Заказы
       summary: Отменить заказ
+      description: Отменяет существующий заказ
+      parameters:
+        - in: query
+          name: orderId
+          required: true
+          schema:
+            type: string
+          description: Идентификатор заказа для отмены
       responses:
         '200':
           description: Подтверждение отмены заказа
           content:
-            text/plain:
-              example: 'Ваш заказ #123 успешно отменен'
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Ваш заказ #123 успешно отменен'
+
+components:
+  schemas:
+    Eclair: # получить эклер дня
+      type: object
+      properties:
+        id:
+          type: string
+          example: "ecl-1"
+        name:
+          type: string
+          example: "Карамельно-ванильный"
+        description:
+          type: string
+          example: "Нежный эклер с карамельно-ванильным кремом и ореховой крошкой"
+        price:
+          type: number
+          format: float
+          example: 50.25
+        isSpecial:
+          type: boolean
+          example: true
+        fillingId: # начинка
+          type: string
+          example: "fill-1"
+      required:
+        - id
+        - name
+        - price
+
+    EclairInput: # создать новый вид эклера
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Мятно-шоколадный"
+        description:
+          type: string
+          example: "Эклер с мятным кремом и темным шоколадом"
+        price:
+          type: number
+          format: float
+          example: 30.50
+        fillingId: # начинка
+          type: string
+          example: "fill-2"
+      required:
+        - name
+        - price
+        - fillingId
+
+    Filling: # получить фирменную начинку
+      type: object
+      properties:
+        id:
+          type: string
+          example: "fill-4"
+        name:
+          type: string
+          example: "Заварной крем с тайским базиликом"
+        description:
+          type: string
+          example: "Уникальная фирменная начинка с нотками тайского базилика"
+        ingredients: # состав
+          type: array
+          items:
+            type: string
+          example: ["молоко", "яйца", "сахар", "тайский базилик"]
+      required:
+        - id
+        - name
+        - ingredients
+
+    FillingUpdate: # обновить состав начинки
+      type: object
+      properties:
+        ingredients:
+          type: array
+          items:
+            type: string
+          example: ["ваниль", "молоко", "яйца", "сахар", "ванильный экстракт"]
+        description:
+          type: string
+          example: "Обновленный ванильный крем с натуральной ванилью"
+    
+    FillingInput: # добавить новую начинку
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Клубнично-базиликовая"
+        description:
+          type: string
+          example: "Свежая клубника с зеленым базиликом"
+        ingredients:
+          type: array
+          items:
+            type: string
+          example: ["клубника", "базилик", "сливки", "сахар"]
+      required:
+        - name
+        - ingredients
+
+    Order: # сделать стандартный заказ
+      type: object
+      properties:
+        orderId:
+          type: string
+          example: "ord-1"
+        eclairs:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+        totalPrice:
+          type: number
+          format: float
+          example: 365.50
+        status:
+          type: string
+          enum: ["Создан", "В пути", "Доставлен", "Отменен"]
+          example: "Создан"
+        createdAt:
+          type: string
+          format: date-time
+          example: "26-03-2025 10:15:50"
+      required:
+        - orderId
+        - totalPrice
+        - status
+
+    OrderItem:
+      type: object
+      properties:
+        eclairId:
+          type: string
+          example: "ecl-5"
+        quantity:
+          type: integer
+          example: 2
+        pricePerUnit:
+          type: number
+          format: float
+          example: 40.99
+
+    OrderInput:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItemInput'
+          minItems: 1
+        customerNotes:
+          type: string
+          example: "Пожалуйста, добавьте больше крема"
+      required:
+        - items
+
+    OrderItemInput:
+      type: object
+      properties:
+        eclairId:
+          type: string
+          example: "ecl-5"
+        quantity:
+          type: integer
+          minimum: 1
+          example: 2
+      required:
+        - eclairId
+        - quantity
+
+    OrderStatus:
+      type: object
+      properties:
+        orderId:
+          type: string
+          example: "ord-1"
+        status:
+          type: string
+          example: "Доставлен"
+        DeliveryTime:
+          type: string
+          format: date-time
+          example: "26-03-2025 11:03:10"
+      required:
+        - orderId
+        - status
