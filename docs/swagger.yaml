@@ -116,7 +116,7 @@ paths:
       tags:
         - Начинки
       summary: Добавить новую начинку
-      description: Создает новый вид начинки для эклеров
+      description: Новый вид начинки для эклеров
       requestBody:
         required: true
         content:
@@ -135,7 +135,7 @@ paths:
       tags:
         - Заказы
       summary: Сделать стандартный заказ
-      description: Создает новый заказ на стандартную коробку эклеров (12 шт)
+      description: Заказ на стандартную коробку эклеров (12 шт)
       requestBody:
         required: true
         content:
@@ -152,8 +152,8 @@ paths:
     get:
       tags:
         - Заказы
-      summary: Получить статус заказа
-      description: Возвращает текущий статус указанного заказа
+      summary: Получить заказ
+      description: Информацию об указанном заказе
       parameters:
         - in: query
           name: orderId
@@ -163,11 +163,11 @@ paths:
           description: Идентификатор заказа
       responses:
         '200':
-          description: Текущий статус заказа
+          description: Информация о заказе
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OrderStatus'
+                $ref: '#/components/schemas/Order'
     delete:
       tags:
         - Заказы
@@ -191,7 +191,6 @@ paths:
                   message:
                     type: string
                     example: 'Ваш заказ #123 успешно отменен'
-
 components:
   schemas:
     Eclair: # получить эклер дня
@@ -274,16 +273,6 @@ components:
         total_items:
           type: integer
           example: 45
-        total_pages: 
-          type: integer
-          example: 3
-        current_page:
-          type: integer
-          example: 1
-        page_size:
-          type: integer
-          example: 15
-        
 
     FillingUpdate: # обновить состав начинки
       type: object
@@ -392,19 +381,32 @@ components:
         - eclairId
         - quantity
 
-    OrderStatus:
+    OrderInfo: # Информация о заказе
       type: object
       properties:
         orderId:
           type: string
           example: "ord-1"
-        status:
+        userID:
           type: string
-          example: "Доставлен"
-        DeliveryTime:
+          example: "user-1"
+        eclairs:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+        totalPrice:
+          type: number
+          format: float
+          example: 365.50
+        createdAt:
           type: string
           format: date-time
-          example: "26-03-2025 11:03:10"
+          example: "26-03-2025 10:15:50"
       required:
         - orderId
-        - status
+        - userId
+        - totalPrice
+        - eclairs
+        - createdAt
+        
+        
