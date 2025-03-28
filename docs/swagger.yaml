@@ -62,20 +62,43 @@ paths:
     get:
       tags:
         - Начинки
-      summary: Получить фирменную начинку
-      description: Информация о специальной фирменной начинке недели
+      summary: Получить список начинок с пагинацией
+      description: Возвращает список начинок с поддержкой пагинации
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: Номер страницы
+        - in: query
+          name: size
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 15
+          description: Количество начинок на странице
       responses:
         '200':
-          description: Описание фирменной начинки
+          description: Список начинок с информацией о пагинации
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Filling'
+                $ref: '#/components/schemas/PaginationFillings'
     patch:
       tags:
         - Начинки
       summary: Обновить состав начинки
       description: Обновляет состав существующей начинки
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Идентификатор начинки для обновления
       requestBody:
         required: true
         content:
@@ -240,6 +263,27 @@ components:
         - id
         - name
         - ingredients
+        
+    PaginationFillings:
+      type: object
+      properties:
+        fillings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Filling'
+        total_items:
+          type: integer
+          example: 45
+        total_pages: 
+          type: integer
+          example: 3
+        current_page:
+          type: integer
+          example: 1
+        page_size:
+          type: integer
+          example: 15
+        
 
     FillingUpdate: # обновить состав начинки
       type: object
@@ -271,12 +315,15 @@ components:
         - name
         - ingredients
 
-    Order: # сделать стандартный заказ
+    Order: # сделать стандартный заказ от лица пользователя
       type: object
       properties:
         orderId:
           type: string
           example: "ord-1"
+        userID:
+          type: string
+          example: "user-1"
         eclairs:
           type: array
           items:
@@ -295,6 +342,7 @@ components:
           example: "26-03-2025 10:15:50"
       required:
         - orderId
+        - userId
         - totalPrice
         - status
 
@@ -315,6 +363,9 @@ components:
     OrderInput:
       type: object
       properties:
+        userId:
+          type: string
+          example: "user-1"
         items:
           type: array
           items:
@@ -324,6 +375,7 @@ components:
           type: string
           example: "Пожалуйста, добавьте больше крема"
       required:
+        - userId
         - items
 
     OrderItemInput:
